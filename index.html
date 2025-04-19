@@ -67,10 +67,14 @@
 
   <!-- الطلب -->
   <section class="p-4 mt-6 max-w-xl mx-auto">
-    <h2 class="text-xl font-bold text-center text-pink-700 mb-4">💌 احجزي منتجك الآن:</h2>
-    <form class="space-y-4 bg-white p-4 rounded-xl shadow">
-      <input type="text" placeholder="الاسم الكامل" class="w-full p-2 border rounded">
-      <input type="tel" placeholder="رقم الهاتف" class="w-full p-2 border rounded">
+  <h2 class="text-xl font-bold text-center text-pink-700 mb-4">💌 احجزي منتجك الآن:</h2>
+  
+  <!-- أضفنا id="my-form" -->
+  <form id="my-form" class="space-y-4 bg-white p-4 rounded-xl shadow">
+    <!-- حقول مع name مطابقة لبيانات السكربت -->
+    <input type="text" name="name" placeholder="الاسم الكامل" class="w-full p-2 border rounded" required>
+    <input type="tel" name="phone" placeholder="رقم الهاتف" class="w-full p-2 border rounded" required>
+    
       <select class="w-full p-2 border rounded">
         <option disabled selected>اختر الولاية</option>
         <option>أدرار</option>
@@ -135,50 +139,45 @@
         <i data-lucide="shopping-bag"></i> اطلب الآن
       </button>
     </form>
-     <div id="message" style="margin-top:1em; color: green;"></div>
+     <!-- عنصر لعرض رسالة النجاح أو الخطأ -->
+  <div id="message" style="margin-top:1em;"></div>
+</section>
 
-  <!-- هنا نضع كود الجافاسكربت -->
-  <script>
-    // 1. نختار الفورم وعنصر الرسالة
-    const form = document.getElementById('my-form');
-    const message = document.getElementById('message');
+<script>
+  // 1. اختيار الفورم وعنصر الرسالة
+  const form = document.getElementById('my-form');
+  const message = document.getElementById('message');
 
-    // 2. نضيف مستمع لحدث الإرسال
-    form.addEventListener('submit', function (e) {
-      e.preventDefault(); // منع إعادة تحميل الصفحة
+  // 2. إضافة مستمع لحدث الإرسال
+  form.addEventListener('submit', function(e) {
+    e.preventDefault(); // منع إعادة تحميل الصفحة
 
-      // 3. نجمع قيم الحقول في كائن بيانات
-      const data = {
-        name: form.name.value,
-        email: form.phone.value,
-        phone: form.location.value
-      };
+    // 3. جمع القيم في كائن بيانات
+    const data = {
+      name:   form.elements['name'].value,
+      phone:  form.elements['phone'].value,
+      state:  form.elements['state'].value,
+      street: form.elements['street'].value
+    };
 
-      // 4. نرسل البيانات إلى عنوان الـ Apps Script
-      fetch('https://script.google.com/macros/s/AKfycbwRExeLKAl5slGmvxrfh8KUpwKDDBMtilbzgr9Iw32SNgK3aNpo6PG7bGVQIY7rKPgN/exec', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(response => response.json())
-      .then(result => {
-        // عند النجاح
-        message.style.color = 'green';
-        message.innerText = '✅ تم الإرسال بنجاح!';
-        form.reset();
-      })
-      .catch(error => {
-        // عند الفشل
-        message.style.color = 'red';
-        message.innerText = '❌ حدث خطأ، حاول مرة أخرى.';
-      });
+    // 4. الإرسال إلى Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbwRExeLKAl5slGmvxrfh8KUpwKDDBMtilbzgr9Iw32SNgK3aNpo6PG7bGVQIY7rKPgN/exec', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(result => {
+      message.style.color = 'green';
+      message.innerText = '✅ تم الإرسال بنجاح!';
+      form.reset();
+    })
+    .catch(err => {
+      message.style.color = 'red';
+      message.innerText = '❌ حدث خطأ، حاول مرة أخرى.';
     });
-    <p class="text-center text-sm text-gray-500 mt-2">أو تواصلي معنا عبر WhatsApp مباشرة:</p>
-    <a href="https://wa.me/212600000000" class="block text-center bg-green-500 text-white py-2 rounded mt-2 hover:bg-green-600 flex justify-center items-center gap-2">
-      <i data-lucide="message-circle"></i> WhatsApp
-    </a>
-  </section>
-
+  });
+</script>
   <script>
     lucide.createIcons();
 
