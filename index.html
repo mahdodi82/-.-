@@ -135,6 +135,44 @@
         <i data-lucide="shopping-bag"></i> اطلب الآن
       </button>
     </form>
+     <div id="message" style="margin-top:1em; color: green;"></div>
+
+  <!-- هنا نضع كود الجافاسكربت -->
+  <script>
+    // 1. نختار الفورم وعنصر الرسالة
+    const form = document.getElementById('my-form');
+    const message = document.getElementById('message');
+
+    // 2. نضيف مستمع لحدث الإرسال
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // منع إعادة تحميل الصفحة
+
+      // 3. نجمع قيم الحقول في كائن بيانات
+      const data = {
+        name: form.name.value,
+        email: form.phone.value,
+        phone: form.location.value
+      };
+
+      // 4. نرسل البيانات إلى عنوان الـ Apps Script
+      fetch('https://script.google.com/macros/s/AKfycbwRExeLKAl5slGmvxrfh8KUpwKDDBMtilbzgr9Iw32SNgK3aNpo6PG7bGVQIY7rKPgN/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => response.json())
+      .then(result => {
+        // عند النجاح
+        message.style.color = 'green';
+        message.innerText = '✅ تم الإرسال بنجاح!';
+        form.reset();
+      })
+      .catch(error => {
+        // عند الفشل
+        message.style.color = 'red';
+        message.innerText = '❌ حدث خطأ، حاول مرة أخرى.';
+      });
+    });
     <p class="text-center text-sm text-gray-500 mt-2">أو تواصلي معنا عبر WhatsApp مباشرة:</p>
     <a href="https://wa.me/212600000000" class="block text-center bg-green-500 text-white py-2 rounded mt-2 hover:bg-green-600 flex justify-center items-center gap-2">
       <i data-lucide="message-circle"></i> WhatsApp
